@@ -19,12 +19,12 @@ F_CPU := 16000000
 
 # Command line arguments
 PROGRAMMER := arduino
-PORT := /dev/ttyUSB0
+PORT := /dev/ttyACM0
 
 # Compiler & Linker
 CC := avr-gcc
 LINKER := avr-gcc
-CFLAGS := -std=c99 -Wall -g -Os -mmcu=${MCU}
+CFLAGS := -std=c99 -Wall -g -Os -mmcu=${MCU} -DF_CPU=${F_CPU}
 LIB := -L lib
 INC := -I include
 
@@ -38,8 +38,6 @@ $(BINDIR)/$(NAME): $(OBJETCS)
 	@echo " Linking..."
 	@mkdir -p $(BINDIR)
 	@echo " $(LINKER) -mmcu=${MCU} $(LIB) $^ -o $(BINDIR)/$(NAME).elf"; $(LINKER) -mmcu=${MCU} $(LIB) $^ -o $(BINDIR)/$(NAME).elf
-
-objcopy:
 	@echo " converting GNU executable file to Intel Hex file"
 	@echo " avr-objcopy -O ihex -j .text -j .data $(BINDIR)/$(NAME).elf $(BINDIR)/$(NAME).hex"; avr-objcopy -O ihex -j .text -j .data $(BINDIR)/$(NAME).elf $(BINDIR)/$(NAME).hex 
 
@@ -52,4 +50,4 @@ clean:
 	@echo " Cleaning...";
 	@echo " $(RM) -r $(BUILDDIR)/* $(BINDIR)/*"; $(RM) -r $(BUILDDIR)/* $(BINDIR)/*
 
-.PHONY: objcopy flash clean
+.PHONY: flash clean
